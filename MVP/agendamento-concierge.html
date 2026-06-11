@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MedConcierge — Consultas Médicas Sem Estresse</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --sky: #0EA5E9;
+    --teal: #14B8A6;
+    --navy: #0F172A;
+    --slate: #1E293B;
+    --muted: #64748B;
+    --light: #F0FDFA;
+  }
+  * { font-family: 'Inter', sans-serif; }
+  body { background: var(--navy); color: #E2E8F0; }
+
+  /* GRADIENT */
+  .grad-text {
+    background: linear-gradient(135deg, var(--sky) 0%, var(--teal) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .grad-bg {
+    background: linear-gradient(135deg, var(--sky) 0%, var(--teal) 100%);
+  }
+  .grad-border {
+    border: 1px solid transparent;
+    background: linear-gradient(var(--slate), var(--slate)) padding-box,
+                linear-gradient(135deg, var(--sky), var(--teal)) border-box;
+  }
+
+  /* HERO PULSE */
+  @keyframes pulse-ring {
+    0% { transform: scale(0.8); opacity: 1; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+  .pulse-ring {
+    animation: pulse-ring 2.4s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  }
+  .pulse-ring-2 { animation-delay: 0.8s; }
+  .pulse-ring-3 { animation-delay: 1.6s; }
+
+  /* CHAT */
+  .chat-box { scrollbar-width: thin; scrollbar-color: #334155 transparent; }
+  .chat-box::-webkit-scrollbar { width: 4px; }
+  .chat-box::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .msg-animate { animation: fadeSlideUp 0.35s ease forwards; }
+
+  @keyframes typing {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-5px); }
+  }
+  .dot1 { animation: typing 1.2s infinite 0s; }
+  .dot2 { animation: typing 1.2s infinite 0.2s; }
+  .dot3 { animation: typing 1.2s infinite 0.4s; }
+
+  /* SCROLLBAR GLOBAL */
+  html { scroll-behavior: smooth; }
+
+  /* TABLE */
+  .dashboard-table th { position: sticky; top: 0; background: #0F172A; z-index: 10; }
+
+  /* INPUT FOCUS */
+  .chat-input:focus { outline: none; box-shadow: 0 0 0 2px var(--teal); }
+
+  /* LOGIN */
+  .login-input:focus { outline: none; box-shadow: 0 0 0 2px var(--sky); }
+
+  /* BADGE */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 10px; border-radius: 999px; font-size: 11px; font-weight: 600;
+  }
+
+  /* CARD HOVER */
+  .feature-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(14,165,233,0.12); }
+  .feature-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+
+  /* SECTION FADE */
+  .section-hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     ÁREA 1: LANDING PAGE
+============================================================ -->
+<div id="landing-area">
+
+  <!-- NAV -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-[#0F172A]/90 backdrop-blur-md border-b border-white/5">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg grad-bg flex items-center justify-center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+        </div>
+        <span class="font-bold text-white text-lg tracking-tight">Med<span class="grad-text">Concierge</span></span>
+      </div>
+      <button onclick="scrollToChat()" class="grad-bg text-white text-sm font-semibold px-5 py-2 rounded-xl hover:opacity-90 transition-opacity hidden sm:block">
+        Agendar Agora
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="relative min-h-screen flex items-center overflow-hidden pt-16">
+
+    <!-- Background grid -->
+    <div class="absolute inset-0 opacity-5" style="background-image: linear-gradient(#0EA5E9 1px, transparent 1px), linear-gradient(90deg, #0EA5E9 1px, transparent 1px); background-size: 60px 60px;"></div>
+
+    <!-- Glow blobs -->
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl opacity-10" style="background: #0EA5E9;"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-3xl opacity-10" style="background: #14B8A6;"></div>
+
+    <div class="max-w-6xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-16 items-center relative z-10">
+
+      <!-- Left -->
+      <div>
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-teal-500/30 bg-teal-500/10 text-teal-300 text-sm font-medium mb-4">
+          <span class="w-2 h-2 bg-teal-400 rounded-full animate-pulse"></span>
+          Concierge Humano + Inteligência Artificial
+        </div>
+        <div class="flex flex-wrap gap-2 mb-8">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/25 text-sky-300 text-xs font-semibold">
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+            Exclusivo em Teresópolis · RJ
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-300 text-xs font-semibold">
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>
+            Particular ou Plano de Saúde
+          </span>
+        </div>
+
+        <h1 class="text-4xl sm:text-5xl lg:text-[3.4rem] font-black leading-[1.1] text-white mb-6">
+          O médico certo,<br/>
+          <span class="grad-text">sem filas,</span><br/>
+          sem estresse.
+        </h1>
+
+        <p class="text-slate-400 text-lg leading-relaxed mb-10 max-w-lg">
+          Nós encontramos o especialista ideal para você e agendamos sua consulta em <strong class="text-slate-200">Teresópolis</strong>. 
+          <strong class="text-slate-200">Sem perda de tempo, sem ligações intermináveis</strong> — nossa IA faz a triagem e nosso time humano cuida do resto. Atendemos exclusivamente consultas <strong class="text-slate-200">particulares</strong>, com médicos selecionados, fora do sistema SUS.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button onclick="scrollToChat()" class="grad-bg text-white font-bold px-8 py-4 rounded-2xl text-lg hover:opacity-90 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-sky-500/25">
+            Quero Agendar Agora →
+          </button>
+          <button onclick="scrollToChat()" class="border border-white/15 text-white font-semibold px-8 py-4 rounded-2xl text-lg hover:bg-white/5 transition-all">
+            Como funciona?
+          </button>
+        </div>
+
+        <!-- Trust badges -->
+        <div class="flex flex-wrap gap-6 mt-10">
+          <div class="flex items-center gap-2 text-slate-400 text-sm">
+            <svg class="w-4 h-4 text-teal-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+            Somente em Teresópolis · RJ
+          </div>
+          <div class="flex items-center gap-2 text-slate-400 text-sm">
+            <svg class="w-4 h-4 text-teal-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+            Consultas particulares
+          </div>
+          <div class="flex items-center gap-2 text-slate-400 text-sm">
+            <svg class="w-4 h-4 text-teal-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+            Retorno em até 2h
+          </div>
+          <div class="flex items-center gap-2 text-slate-400 text-sm">
+            <svg class="w-4 h-4 text-teal-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+            100% seguro e privado
+          </div>
+        </div>
+      </div>
+
+      <!-- Right — Pulse Icon -->
+      <div class="flex items-center justify-center lg:justify-end">
+        <div class="relative flex items-center justify-center w-72 h-72">
+          <div class="absolute w-32 h-32 rounded-full bg-sky-500/15 pulse-ring"></div>
+          <div class="absolute w-32 h-32 rounded-full bg-teal-500/15 pulse-ring pulse-ring-2"></div>
+          <div class="absolute w-32 h-32 rounded-full bg-sky-500/10 pulse-ring pulse-ring-3"></div>
+          <div class="relative w-36 h-36 rounded-3xl grad-bg flex items-center justify-center shadow-2xl shadow-sky-500/30 rotate-3 hover:rotate-0 transition-transform duration-500">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="py-24 relative">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <p class="text-sky-400 font-semibold text-sm uppercase tracking-widest mb-3">Processo simples</p>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white">Como funciona em <span class="grad-text">3 passos</span></h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="feature-card grad-border rounded-2xl p-8 bg-[#1E293B]">
+          <div class="w-12 h-12 rounded-xl bg-sky-500/20 flex items-center justify-center mb-6">
+            <svg class="w-6 h-6 text-sky-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+          </div>
+          <div class="text-sky-400 text-xs font-bold uppercase tracking-widest mb-2">Passo 1</div>
+          <h3 class="text-white font-bold text-xl mb-3">Descreva seus sintomas</h3>
+          <p class="text-slate-400 leading-relaxed">Nossa IA faz uma triagem rápida e inteligente para identificar qual especialidade médica é mais adequada para você.</p>
+        </div>
+        <div class="feature-card grad-border rounded-2xl p-8 bg-[#1E293B]">
+          <div class="w-12 h-12 rounded-xl bg-teal-500/20 flex items-center justify-center mb-6">
+            <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+          </div>
+          <div class="text-teal-400 text-xs font-bold uppercase tracking-widest mb-2">Passo 2</div>
+          <h3 class="text-white font-bold text-xl mb-3">Nosso time entra em ação</h3>
+          <p class="text-slate-400 leading-relaxed">Um especialista humano recebe seu pedido pelo WhatsApp e busca os melhores médicos disponíveis na sua rede de cobertura.</p>
+        </div>
+        <div class="feature-card grad-border rounded-2xl p-8 bg-[#1E293B]">
+          <div class="w-12 h-12 rounded-xl bg-sky-500/20 flex items-center justify-center mb-6">
+            <svg class="w-6 h-6 text-sky-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+          </div>
+          <div class="text-sky-400 text-xs font-bold uppercase tracking-widest mb-2">Passo 3</div>
+          <h3 class="text-white font-bold text-xl mb-3">Consulta agendada!</h3>
+          <p class="text-slate-400 leading-relaxed">Você recebe a confirmação com todos os dados da consulta. Só aparecer no horário — cuidamos de tudo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COBERTURA BANNER -->
+  <section class="py-10">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="rounded-2xl border border-amber-500/20 bg-amber-500/5 px-8 py-6 flex flex-col sm:flex-row items-center gap-6">
+        <div class="w-12 h-12 rounded-xl bg-amber-500/15 flex items-center justify-center flex-shrink-0">
+          <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <div class="text-center sm:text-left">
+          <p class="text-amber-300 font-bold text-base mb-1">Serviço exclusivo para Teresópolis · RJ</p>
+          <p class="text-slate-400 text-sm leading-relaxed">
+            Trabalhamos apenas com <strong class="text-slate-200">consultas particulares</strong> em clínicas e consultórios de Teresópolis. 
+            <strong class="text-slate-200">Não realizamos agendamentos pelo SUS</strong>, convênios coletivos ou planos de saúde. 
+            O pagamento é feito diretamente ao médico no dia da consulta.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAT SECTION -->
+  <section id="chat-section" class="py-24">
+    <div class="max-w-3xl mx-auto px-6">
+      <div class="text-center mb-12">
+        <p class="text-teal-400 font-semibold text-sm uppercase tracking-widest mb-3">Triagem Inteligente</p>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Fale com nossa <span class="grad-text">IA Assistente</span></h2>
+        <p class="text-slate-400">Responda as perguntas abaixo e nossa equipe encontrará o especialista particular ideal para você em <strong class="text-slate-300">Teresópolis</strong>.</p>
+      </div>
+
+      <!-- Chat Widget -->
+      <div class="grad-border rounded-3xl overflow-hidden bg-[#1E293B] shadow-2xl shadow-black/50">
+
+        <!-- Chat Header -->
+        <div class="px-6 py-4 flex items-center gap-3 border-b border-white/5" style="background: linear-gradient(135deg, rgba(14,165,233,0.12) 0%, rgba(20,184,166,0.12) 100%);">
+          <div class="relative">
+            <div class="w-10 h-10 rounded-full grad-bg flex items-center justify-center">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-2"/></svg>
+            </div>
+            <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-[#1E293B]"></span>
+          </div>
+          <div>
+            <p class="text-white font-semibold text-sm">MedConcierge IA</p>
+            <p class="text-emerald-400 text-xs font-medium">● Online agora</p>
+          </div>
+          <div class="ml-auto">
+            <span class="badge bg-sky-500/15 text-sky-300 border border-sky-500/20">🔒 Conversa segura</span>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div id="chat-messages" class="chat-box h-80 overflow-y-auto p-6 space-y-4 flex flex-col">
+          <!-- JS populates this -->
+        </div>
+
+        <!-- Typing indicator -->
+        <div id="typing-indicator" class="hidden px-6 pb-2">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full grad-bg flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-2"/></svg>
+            </div>
+            <div class="bg-[#0F172A] rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-1">
+              <span class="w-2 h-2 bg-slate-400 rounded-full dot1"></span>
+              <span class="w-2 h-2 bg-slate-400 rounded-full dot2"></span>
+              <span class="w-2 h-2 bg-slate-400 rounded-full dot3"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick reply options -->
+        <div id="quick-replies" class="hidden px-6 pb-4 flex flex-wrap gap-2">
+          <!-- JS populates -->
+        </div>
+
+        <!-- Input -->
+        <div class="px-6 py-4 border-t border-white/5 flex gap-3">
+          <input id="chat-input" type="text"
+            placeholder="Digite sua resposta aqui..."
+            class="chat-input flex-1 bg-[#0F172A] border border-white/10 text-white placeholder-slate-500 rounded-xl px-4 py-3 text-sm transition-all"
+            onkeydown="if(event.key==='Enter') sendMessage()" />
+          <button onclick="sendMessage()" id="send-btn"
+            class="grad-bg text-white rounded-xl px-5 py-3 font-semibold text-sm hover:opacity-90 transition-opacity flex items-center gap-2 whitespace-nowrap">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+            <span class="hidden sm:inline">Enviar</span>
+          </button>
+        </div>
+      </div>
+
+      <p class="text-center text-slate-500 text-xs mt-4">
+        🔒 Seus dados são protegidos conforme a <strong class="text-slate-400">LGPD (Lei 13.709/2018)</strong>
+      </p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/5 py-12">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-lg grad-bg flex items-center justify-center">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <span class="font-bold text-white text-base">Med<span class="grad-text">Concierge</span></span>
+        </div>
+
+        <div class="text-center text-slate-500 text-xs leading-relaxed max-w-xl">
+          <p>⚠️ Este serviço de triagem por IA <strong class="text-slate-400">não constitui diagnóstico médico</strong> e não substitui a avaliação presencial de um profissional de saúde habilitado.</p>
+          <p class="mt-2">📍 Serviço disponível <strong class="text-slate-400">exclusivamente em Teresópolis · RJ</strong>. Trabalhamos apenas com <strong class="text-slate-400">consultas particulares</strong> — não realizamos agendamentos pelo SUS ou por convênios.</p>
+          <p class="mt-2">🔒 Seus dados pessoais são tratados com base na <strong class="text-slate-400">Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018)</strong> e utilizados exclusivamente para fins de agendamento médico. Para solicitar exclusão, acesso ou correção dos seus dados, entre em contato conosco.</p>
+        </div>
+
+        <button onclick="showRestrictedArea()" class="text-slate-600 hover:text-slate-400 text-xs transition-colors underline underline-offset-2">
+          Acesso Restrito
+        </button>
+      </div>
+
+      <div class="mt-8 pt-6 border-t border-white/5 text-center text-slate-600 text-xs">
+        © 2025 MedConcierge · Todos os direitos reservados · CNPJ 00.000.000/0001-00
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ============================================================
+     ÁREA LOGIN
+============================================================ -->
+<div id="login-area" class="section-hidden min-h-screen flex items-center justify-center p-6">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-8">
+      <div class="inline-flex w-16 h-16 rounded-2xl grad-bg items-center justify-center mb-4 shadow-xl shadow-sky-500/25">
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      </div>
+      <h2 class="text-2xl font-bold text-white">Acesso Restrito</h2>
+      <p class="text-slate-400 text-sm mt-1">Painel exclusivo para supervisores</p>
+    </div>
+
+    <div class="grad-border rounded-2xl p-8 bg-[#1E293B]">
+      <div class="space-y-5">
+        <div>
+          <label class="block text-slate-300 text-sm font-medium mb-2">Usuário</label>
+          <input id="login-user" type="text" placeholder="Digite seu usuário"
+            class="login-input w-full bg-[#0F172A] border border-white/10 text-white placeholder-slate-500 rounded-xl px-4 py-3 text-sm transition-all"
+            onkeydown="if(event.key==='Enter') doLogin()" />
+        </div>
+        <div>
+          <label class="block text-slate-300 text-sm font-medium mb-2">Senha</label>
+          <div class="relative">
+            <input id="login-pass" type="password" placeholder="Digite sua senha"
+              class="login-input w-full bg-[#0F172A] border border-white/10 text-white placeholder-slate-500 rounded-xl px-4 py-3 pr-12 text-sm transition-all"
+              onkeydown="if(event.key==='Enter') doLogin()" />
+            <button onclick="togglePass()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition-colors">
+              <svg id="eye-icon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="login-error" class="hidden bg-red-500/15 border border-red-500/30 text-red-300 text-sm rounded-xl px-4 py-3 flex items-center gap-2">
+          <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+          Usuário ou senha incorretos. Tente novamente.
+        </div>
+
+        <button onclick="doLogin()"
+          class="w-full grad-bg text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-sky-500/20">
+          Entrar no Painel
+        </button>
+
+        <button onclick="showLanding()" class="w-full text-slate-500 hover:text-slate-300 text-sm transition-colors py-1">
+          ← Voltar ao site
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     ÁREA 2: DASHBOARD DO SUPERVISOR
+============================================================ -->
+<div id="dashboard-area" class="section-hidden min-h-screen">
+
+  <!-- Dashboard Nav -->
+  <nav class="bg-[#1E293B] border-b border-white/5 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg grad-bg flex items-center justify-center">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div>
+          <span class="font-bold text-white text-sm">MedConcierge</span>
+          <span class="text-slate-500 text-sm"> / Painel do Supervisor</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="text-slate-400 text-sm hidden sm:inline">Olá, <strong class="text-white">Supervisor</strong></span>
+        <button onclick="doLogout()"
+          class="flex items-center gap-2 bg-[#0F172A] border border-white/10 text-slate-300 hover:text-white px-4 py-2 rounded-xl text-sm font-medium transition-all hover:border-white/20">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          Sair
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Dashboard Content -->
+  <div class="max-w-7xl mx-auto px-6 py-10">
+
+    <!-- Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      <div class="bg-[#1E293B] rounded-2xl p-5 border border-white/5">
+        <p class="text-slate-400 text-xs font-medium mb-2 uppercase tracking-wide">Total de Pedidos</p>
+        <p id="stat-total" class="text-3xl font-black text-white">0</p>
+      </div>
+      <div class="bg-[#1E293B] rounded-2xl p-5 border border-white/5">
+        <p class="text-slate-400 text-xs font-medium mb-2 uppercase tracking-wide">Hoje</p>
+        <p id="stat-today" class="text-3xl font-black grad-text">0</p>
+      </div>
+      <div class="bg-[#1E293B] rounded-2xl p-5 border border-white/5">
+        <p class="text-slate-400 text-xs font-medium mb-2 uppercase tracking-wide">Plano de Saúde</p>
+        <p id="stat-plano" class="text-3xl font-black text-sky-400">0</p>
+      </div>
+      <div class="bg-[#1E293B] rounded-2xl p-5 border border-white/5">
+        <p class="text-slate-400 text-xs font-medium mb-2 uppercase tracking-wide">Particular</p>
+        <p id="stat-particular" class="text-3xl font-black text-teal-400">0</p>
+      </div>
+    </div>
+
+    <!-- Table Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="text-xl font-bold text-white">Pedidos de Agendamento</h2>
+        <p class="text-slate-400 text-sm mt-1">Todos os pedidos recebidos via triagem IA</p>
+      </div>
+      <button onclick="clearAllRequests()"
+        class="flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-400 hover:text-red-300 px-4 py-2 rounded-xl text-sm font-medium transition-all hover:bg-red-500/15">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        Limpar Tudo
+      </button>
+    </div>
+
+    <!-- Empty State -->
+    <div id="empty-state" class="hidden text-center py-20 bg-[#1E293B] rounded-2xl border border-white/5">
+      <div class="w-16 h-16 rounded-2xl bg-[#0F172A] flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      </div>
+      <p class="text-slate-400 font-medium">Nenhum pedido registrado ainda</p>
+      <p class="text-slate-500 text-sm mt-1">Os pedidos feitos no chat aparecerão aqui</p>
+    </div>
+
+    <!-- Table -->
+    <div id="requests-table-wrap" class="bg-[#1E293B] rounded-2xl border border-white/5 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="dashboard-table w-full text-sm">
+          <thead>
+            <tr class="text-slate-400 text-xs uppercase tracking-wider">
+              <th class="text-left px-6 py-4 font-semibold border-b border-white/5">#</th>
+              <th class="text-left px-6 py-4 font-semibold border-b border-white/5">Nome</th>
+              <th class="text-left px-6 py-4 font-semibold border-b border-white/5">Sintomas / Especialidade</th>
+              <th class="text-left px-6 py-4 font-semibold border-b border-white/5">Plano</th>
+              <th class="text-left px-6 py-4 font-semibold border-b border-white/5">WhatsApp</th>
+              <th class="text-left px-6 py-4 font-semibold border-b border-white/5">Data/Hora</th>
+              <th class="text-left px-6 py-4 font-semibold border-b border-white/5">Ação</th>
+            </tr>
+          </thead>
+          <tbody id="requests-tbody">
+            <!-- JS populates -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Footer note -->
+    <p class="text-center text-slate-600 text-xs mt-8">
+      🔒 Este painel contém dados pessoais protegidos pela LGPD (Lei 13.709/2018). Acesso restrito e auditado.
+    </p>
+  </div>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT
+============================================================ -->
+<script>
+// ═══════════════════════════════
+//  CONFIG — altere aqui
+// ═══════════════════════════════
+const WHATSAPP_NUMBER = '5521966012516'; // SEU NÚMERO AQUI (sem + e sem espaços)
+const SUPERVISOR_USER = 'Supervisor';
+const SUPERVISOR_PASS = '182821Crt?';
+const LS_KEY = 'medconcierge_requests';
+
+// ═══════════════════════════════
+//  NAVEGAÇÃO ENTRE ÁREAS
+// ═══════════════════════════════
+function showLanding()        { toggle('landing-area', 'login-area', 'dashboard-area'); }
+function showRestrictedArea() { toggle('login-area', 'landing-area', 'dashboard-area'); document.getElementById('login-user').value=''; document.getElementById('login-pass').value=''; document.getElementById('login-error').classList.add('hidden'); }
+function showDashboard()      { toggle('dashboard-area', 'landing-area', 'login-area'); loadDashboard(); }
+
+function toggle(show, ...hide) {
+  document.getElementById(show).classList.remove('section-hidden');
+  hide.forEach(id => document.getElementById(id).classList.add('section-hidden'));
+  window.scrollTo(0,0);
+}
+
+function scrollToChat() {
+  document.getElementById('chat-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ═══════════════════════════════
+//  LOGIN
+// ═══════════════════════════════
+let passVisible = false;
+function togglePass() {
+  const inp = document.getElementById('login-pass');
+  passVisible = !passVisible;
+  inp.type = passVisible ? 'text' : 'password';
+}
+
+function doLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  const err = document.getElementById('login-error');
+  if (u === SUPERVISOR_USER && p === SUPERVISOR_PASS) {
+    err.classList.add('hidden');
+    showDashboard();
+  } else {
+    err.classList.remove('hidden');
+    document.getElementById('login-pass').value = '';
+  }
+}
+
+function doLogout() {
+  showLanding();
+}
+
+// ═══════════════════════════════
+//  CHAT ENGINE
+// ═══════════════════════════════
+
+// Lista completa de especialidades disponíveis
+const SPECIALTIES_LIST = [
+  { name: 'Cardiologista',           icon: '❤️',  desc: 'Coração e sistema cardiovascular' },
+  { name: 'Dermatologista',          icon: '🧴',  desc: 'Pele, cabelo e unhas' },
+  { name: 'Ortopedista',             icon: '🦴',  desc: 'Ossos, articulações e músculos' },
+  { name: 'Neurologista',            icon: '🧠',  desc: 'Sistema nervoso e cérebro' },
+  { name: 'Gastroenterologista',     icon: '🫁',  desc: 'Estômago, intestino e digestão' },
+  { name: 'Oftalmologista',          icon: '👁️',  desc: 'Olhos e visão' },
+  { name: 'Otorrinolaringologista',  icon: '👂',  desc: 'Ouvido, nariz e garganta' },
+  { name: 'Pneumologista',           icon: '🫀',  desc: 'Pulmões e respiração' },
+  { name: 'Psiquiatra',              icon: '🧘',  desc: 'Saúde mental e emocional' },
+  { name: 'Urologista',              icon: '🩺',  desc: 'Sistema urinário e próstata' },
+  { name: 'Nefrologista',            icon: '💧',  desc: 'Rins e filtração' },
+  { name: 'Endocrinologista',        icon: '⚗️',  desc: 'Hormônios, diabetes e tireoide' },
+  { name: 'Ginecologista',           icon: '🌸',  desc: 'Saúde feminina e reprodutiva' },
+  { name: 'Urologista / Andrologia', icon: '🔬',  desc: 'Saúde masculina' },
+  { name: 'Reumatologista',          icon: '🦾',  desc: 'Artrite, lúpus e articulações' },
+  { name: 'Infectologista',          icon: '🦠',  desc: 'Infecções e imunidade' },
+  { name: 'Oncologista',             icon: '🎗️',  desc: 'Prevenção e tratamento do câncer' },
+  { name: 'Hematologista',           icon: '🩸',  desc: 'Sangue e coagulação' },
+  { name: 'Nutricionista',           icon: '🥗',  desc: 'Alimentação e saúde metabólica' },
+  { name: 'Geriatra',                icon: '🏥',  desc: 'Saúde do idoso' },
+  { name: 'Pediatra',                icon: '👶',  desc: 'Saúde infantil e adolescente' },
+  { name: 'Clínico Geral',           icon: '🩻',  desc: 'Avaliação geral e check-up' },
+];
+
+// Mapa expandido de palavras-chave → especialidade
+const SPECIALTY_MAP = {
+  // Cardiologia
+  'coração': 'Cardiologista', 'cardíaco': 'Cardiologista', 'palpitação': 'Cardiologista',
+  'pressão alta': 'Cardiologista', 'hipertensão': 'Cardiologista', 'arritmia': 'Cardiologista',
+  'infarto': 'Cardiologista', 'taquicardia': 'Cardiologista', 'angina': 'Cardiologista',
+  'colesterol': 'Cardiologista', 'insuficiência cardíaca': 'Cardiologista',
+
+  // Dermatologia
+  'pele': 'Dermatologista', 'acne': 'Dermatologista', 'mancha': 'Dermatologista',
+  'coceira': 'Dermatologista', 'alergia na pele': 'Dermatologista', 'urticária': 'Dermatologista',
+  'eczema': 'Dermatologista', 'psoríase': 'Dermatologista', 'verruga': 'Dermatologista',
+  'queda de cabelo': 'Dermatologista', 'caspa': 'Dermatologista', 'unhas': 'Dermatologista',
+  'micose': 'Dermatologista', 'candidíase na pele': 'Dermatologista',
+
+  // Ortopedia
+  'osso': 'Ortopedista', 'fratura': 'Ortopedista', 'torção': 'Ortopedista',
+  'coluna': 'Ortopedista', 'joelho': 'Ortopedista', 'quadril': 'Ortopedista',
+  'ombro': 'Ortopedista', 'lombar': 'Ortopedista', 'hérnia de disco': 'Ortopedista',
+  'tendinite': 'Ortopedista', 'bursite': 'Ortopedista', 'escoliose': 'Ortopedista',
+  'artrose': 'Ortopedista', 'articulação': 'Ortopedista', 'punho': 'Ortopedista',
+  'tornozelo': 'Ortopedista', 'pé': 'Ortopedista', 'mão': 'Ortopedista',
+  'dor nas costas': 'Ortopedista', 'dor no joelho': 'Ortopedista',
+
+  // Neurologia
+  'enxaqueca': 'Neurologista', 'tontura': 'Neurologista', 'formigamento': 'Neurologista',
+  'dormência': 'Neurologista', 'convulsão': 'Neurologista', 'epilepsia': 'Neurologista',
+  'parkinson': 'Neurologista', 'alzheimer': 'Neurologista', 'tremor': 'Neurologista',
+  'perda de memória': 'Neurologista', 'dor de cabeça forte': 'Neurologista',
+  'nervo': 'Neurologista', 'neurológico': 'Neurologista', 'desmaio': 'Neurologista',
+
+  // Gastroenterologia
+  'estômago': 'Gastroenterologista', 'intestino': 'Gastroenterologista',
+  'refluxo': 'Gastroenterologista', 'gastrite': 'Gastroenterologista',
+  'náusea': 'Gastroenterologista', 'vômito': 'Gastroenterologista',
+  'diarreia': 'Gastroenterologista', 'prisão de ventre': 'Gastroenterologista',
+  'constipação': 'Gastroenterologista', 'hemorroida': 'Gastroenterologista',
+  'úlcera': 'Gastroenterologista', 'intestino irritável': 'Gastroenterologista',
+  'colite': 'Gastroenterologista', 'crohn': 'Gastroenterologista',
+  'fígado': 'Gastroenterologista', 'hepatite': 'Gastroenterologista',
+  'inchaço abdominal': 'Gastroenterologista', 'dor abdominal': 'Gastroenterologista',
+
+  // Oftalmologia
+  'olho': 'Oftalmologista', 'visão': 'Oftalmologista', 'miopia': 'Oftalmologista',
+  'conjuntivite': 'Oftalmologista', 'catarata': 'Oftalmologista', 'glaucoma': 'Oftalmologista',
+  'vista cansada': 'Oftalmologista', 'óculos': 'Oftalmologista', 'olho seco': 'Oftalmologista',
+
+  // Otorrino
+  'nariz': 'Otorrinolaringologista', 'garganta': 'Otorrinolaringologista',
+  'ouvido': 'Otorrinolaringologista', 'sinusite': 'Otorrinolaringologista',
+  'rinite': 'Otorrinolaringologista', 'amigdalite': 'Otorrinolaringologista',
+  'zumbido': 'Otorrinolaringologista', 'ronco': 'Otorrinolaringologista',
+  'apneia': 'Otorrinolaringologista', 'dor no ouvido': 'Otorrinolaringologista',
+  'perda auditiva': 'Otorrinolaringologista', 'laringite': 'Otorrinolaringologista',
+
+  // Pneumologia
+  'pulmão': 'Pneumologista', 'tosse': 'Pneumologista', 'asma': 'Pneumologista',
+  'bronquite': 'Pneumologista', 'falta de ar': 'Pneumologista', 'dispneia': 'Pneumologista',
+  'enfisema': 'Pneumologista', 'respiração': 'Pneumologista', 'pneumonia': 'Pneumologista',
+
+  // Psiquiatria
+  'depressão': 'Psiquiatra', 'ansiedade': 'Psiquiatra', 'pânico': 'Psiquiatra',
+  'bipolar': 'Psiquiatra', 'insônia': 'Psiquiatra', 'sono': 'Psiquiatra',
+  'fobia': 'Psiquiatra', 'esquizofrenia': 'Psiquiatra', 'toc': 'Psiquiatra',
+  'transtorno': 'Psiquiatra', 'burnout': 'Psiquiatra', 'estresse extremo': 'Psiquiatra',
+
+  // Urologia
+  'urina': 'Urologista', 'próstata': 'Urologista', 'bexiga': 'Urologista',
+  'incontinência': 'Urologista', 'infecção urinária': 'Urologista', 'cálculo renal': 'Urologista',
+  'pedra nos rins': 'Urologista', 'disfunção erétil': 'Urologista',
+
+  // Nefrologia
+  'rim': 'Nefrologista', 'renal': 'Nefrologista', 'creatinina': 'Nefrologista',
+
+  // Endocrinologia
+  'diabetes': 'Endocrinologista', 'tireoide': 'Endocrinologista', 'hipotireoidismo': 'Endocrinologista',
+  'hipertireoidismo': 'Endocrinologista', 'hormônio': 'Endocrinologista', 'obesidade': 'Endocrinologista',
+  'excesso de peso': 'Endocrinologista', 'resistência insulina': 'Endocrinologista',
+  'glicemia': 'Endocrinologista', 'colesterol alto': 'Endocrinologista',
+
+  // Ginecologia
+  'ginecológico': 'Ginecologista', 'menstruação': 'Ginecologista', 'ovário': 'Ginecologista',
+  'útero': 'Ginecologista', 'mioma': 'Ginecologista', 'cisto': 'Ginecologista',
+  'menopausa': 'Ginecologista', 'candidíase': 'Ginecologista', 'papanicolau': 'Ginecologista',
+  'gravidez': 'Ginecologista', 'prenatal': 'Ginecologista',
+
+  // Reumatologia
+  'artrite': 'Reumatologista', 'reumatismo': 'Reumatologista', 'lúpus': 'Reumatologista',
+  'fibromialgia': 'Reumatologista', 'gota': 'Reumatologista', 'dor generalizada': 'Reumatologista',
+
+  // Infectologia
+  'infecção': 'Infectologista', 'hiv': 'Infectologista', 'dengue': 'Infectologista',
+  'covid': 'Infectologista', 'febre recorrente': 'Infectologista',
+
+  // Oncologia
+  'câncer': 'Oncologista', 'tumor': 'Oncologista', 'quimioterapia': 'Oncologista',
+  'oncologia': 'Oncologista', 'nódulo': 'Oncologista',
+
+  // Hematologia
+  'anemia': 'Hematologista', 'sangue': 'Hematologista', 'coagulação': 'Hematologista',
+  'plaquetas': 'Hematologista', 'leucemia': 'Hematologista',
+
+  // Nutrição
+  'nutrição': 'Nutricionista', 'dieta': 'Nutricionista', 'emagrecimento': 'Nutricionista',
+  'alimentação': 'Nutricionista', 'perda de peso': 'Nutricionista',
+
+  // Geriatria
+  'idoso': 'Geriatra', 'terceira idade': 'Geriatra', 'geriátrico': 'Geriatra',
+
+  // Pediatria
+  'criança': 'Pediatra', 'bebê': 'Pediatra', 'pediatra': 'Pediatra',
+  'adolescente': 'Pediatra', 'infantil': 'Pediatra',
+
+  // Clínico Geral (fallback intencional)
+  'check-up': 'Clínico Geral', 'exame geral': 'Clínico Geral',
+  'gripe': 'Clínico Geral', 'resfriado': 'Clínico Geral',
+};
+
+// Estado do chat — inclui modo de entrada (sintomas ou especialista direto)
+let chatStep = 0;
+let chatMode = null; // 'symptoms' | 'direct'
+let chatData = { sintomas: '', especialidade: '', nome: '', plano: '', whatsapp: '' };
+
+function detectSpecialty(text) {
+  const lower = text.toLowerCase();
+  // Tenta frases primeiro (mais específico)
+  for (const [kw, spec] of Object.entries(SPECIALTY_MAP)) {
+    if (kw.includes(' ') && lower.includes(kw)) return spec;
+  }
+  // Depois palavras simples
+  for (const [kw, spec] of Object.entries(SPECIALTY_MAP)) {
+    if (!kw.includes(' ') && lower.includes(kw)) return spec;
+  }
+  return null; // retorna null quando não detecta
+}
+
+// ── Renderização de mensagens ──────────────────────────────
+function addBotMessage(html) {
+  const el = document.createElement('div');
+  el.className = 'flex items-start gap-3 msg-animate';
+  el.innerHTML = `
+    <div class="w-8 h-8 rounded-full grad-bg flex items-center justify-center flex-shrink-0 mt-0.5">
+      <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-2"/></svg>
+    </div>
+    <div class="bg-[#0F172A] rounded-2xl rounded-tl-sm px-4 py-3 max-w-sm text-slate-200 text-sm leading-relaxed">${html}</div>`;
+  const box = document.getElementById('chat-messages');
+  box.appendChild(el);
+  box.scrollTop = box.scrollHeight;
+}
+
+function addUserMessage(text) {
+  const el = document.createElement('div');
+  el.className = 'flex items-start justify-end gap-3 msg-animate';
+  el.innerHTML = `
+    <div class="grad-bg rounded-2xl rounded-tr-sm px-4 py-3 max-w-sm text-white text-sm leading-relaxed">${text}</div>
+    <div class="w-8 h-8 rounded-full bg-slate-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+      <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+    </div>`;
+  const box = document.getElementById('chat-messages');
+  box.appendChild(el);
+  box.scrollTop = box.scrollHeight;
+}
+
+// ── Indicador de digitação ─────────────────────────────────
+function showTyping() {
+  document.getElementById('typing-indicator').classList.remove('hidden');
+  const box = document.getElementById('chat-messages');
+  box.scrollTop = box.scrollHeight;
+}
+function hideTyping() { document.getElementById('typing-indicator').classList.add('hidden'); }
+
+// ── Quick replies simples ──────────────────────────────────
+function showQuickReplies(options) {
+  const qr = document.getElementById('quick-replies');
+  qr.innerHTML = '';
+  qr.classList.remove('hidden');
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'grad-border bg-[#0F172A] text-slate-200 text-sm px-4 py-2 rounded-xl hover:bg-[#1a2942] transition-all';
+    btn.textContent = opt;
+    btn.onclick = () => sendMessage(opt);
+    qr.appendChild(btn);
+  });
+}
+function hideQuickReplies() {
+  const qr = document.getElementById('quick-replies');
+  qr.classList.add('hidden');
+  qr.innerHTML = '';
+}
+
+// ── Grid de especialidades clicável ───────────────────────
+function showSpecialtyGrid() {
+  const qr = document.getElementById('quick-replies');
+  qr.innerHTML = '';
+  qr.classList.remove('hidden');
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'w-full';
+
+  const title = document.createElement('p');
+  title.className = 'text-slate-400 text-xs mb-3 font-medium';
+  title.textContent = 'Selecione a especialidade desejada:';
+  wrapper.appendChild(title);
+
+  const grid = document.createElement('div');
+  grid.className = 'grid grid-cols-2 gap-2 max-h-56 overflow-y-auto pr-1';
+  grid.style.scrollbarWidth = 'thin';
+
+  SPECIALTIES_LIST.forEach(sp => {
+    const btn = document.createElement('button');
+    btn.className = 'flex items-center gap-2 bg-[#0F172A] border border-white/10 hover:border-teal-500/50 hover:bg-teal-500/10 text-slate-200 text-xs px-3 py-2.5 rounded-xl transition-all text-left';
+    btn.innerHTML = `<span class="text-base leading-none flex-shrink-0">${sp.icon}</span><div><div class="font-semibold text-slate-100 leading-tight">${sp.name}</div><div class="text-slate-500 text-[10px] leading-tight mt-0.5">${sp.desc}</div></div>`;
+    btn.onclick = () => selectSpecialtyDirect(sp.name);
+    grid.appendChild(btn);
+  });
+
+  wrapper.appendChild(grid);
+  qr.appendChild(wrapper);
+
+  const box = document.getElementById('chat-messages');
+  box.scrollTop = box.scrollHeight;
+}
+
+function selectSpecialtyDirect(name) {
+  hideQuickReplies();
+  chatData.especialidade = name;
+  chatData.sintomas = `Paciente solicitou diretamente: ${name}`;
+  addUserMessage(`${SPECIALTIES_LIST.find(s=>s.name===name)?.icon || '🩺'} ${name}`);
+
+  setInputState(false);
+  setTimeout(() => {
+    showTyping();
+    setTimeout(() => {
+      hideTyping();
+      addBotMessage(`Ótima escolha! Vamos agilizar o seu agendamento com um(a) <strong class="text-teal-300">${name}</strong> em Teresópolis.\n\nAgora preciso de alguns dados. Qual é o seu <strong>nome completo</strong>?`);
+      setInputState(true, 'Seu nome completo');
+      chatStep = STEP.NOME;
+    }, 1000);
+  }, 300);
+}
+
+// ── Controle de estado do input ───────────────────────────
+function setInputState(enabled, placeholder) {
+  const inp = document.getElementById('chat-input');
+  const btn = document.getElementById('send-btn');
+  inp.disabled = !enabled;
+  btn.disabled = !enabled;
+  if (placeholder) inp.placeholder = placeholder;
+  if (enabled) inp.focus();
+}
+
+// ── Steps como constantes ────────────────────────────────
+const STEP = {
+  INICIO:    0,
+  MODO:      1,   // escolhe sintomas ou especialista direto
+  SINTOMAS:  2,   // digita sintomas (modo symptoms)
+  GRID:      3,   // exibe grid (modo direct) — tratado internamente
+  NOME:      4,
+  PLANO:     5,
+  WHATSAPP:  6,
+  FIM:       7
+};
+
+// ── Mensagem de envio ────────────────────────────────────
+function sendMessage(forceValue) {
+  const inp = document.getElementById('chat-input');
+  const val = forceValue !== undefined ? forceValue : inp.value.trim();
+  if (!val) return;
+
+  hideQuickReplies();
+  addUserMessage(val);
+  inp.value = '';
+  setInputState(false);
+
+  setTimeout(() => {
+    showTyping();
+    setTimeout(() => {
+      hideTyping();
+      handleStep(val);
+    }, 1100);
+  }, 300);
+}
+
+// ── Máquina de estados ────────────────────────────────────
+function handleStep(val) {
+  switch (chatStep) {
+
+    case STEP.INICIO:
+      // Boas-vindas já exibidas; primeiro input = escolha de modo
+      chatStep = STEP.MODO;
+      handleStep(val);
+      break;
+
+    case STEP.MODO:
+      if (val === '🔍 Descrever meus sintomas') {
+        chatMode = 'symptoms';
+        chatStep = STEP.SINTOMAS;
+        addBotMessage(`Tudo bem! Me conte com detalhes: <strong>quais sintomas você está sentindo?</strong> Quanto mais você descrever, melhor consigo indicar a especialidade certa.`);
+        setInputState(true, 'Ex: Dor de cabeça forte há 3 dias, com tontura...');
+      } else {
+        chatMode = 'direct';
+        chatStep = STEP.GRID;
+        addBotMessage(`Ótimo! Selecione abaixo o especialista que você precisa:`);
+        setInputState(false, 'Selecione uma especialidade ↑');
+        showSpecialtyGrid();
+      }
+      break;
+
+    case STEP.SINTOMAS:
+      chatData.sintomas = val;
+      const detected = detectSpecialty(val);
+      if (detected) {
+        chatData.especialidade = detected;
+        addBotMessage(`Entendido! Com base nos seus sintomas, a indicação é consultar um(a) <strong class="text-teal-300">${detected}</strong>.\n\n⚠️ <em class="text-yellow-300/90 text-xs">Atenção: isso não é diagnóstico médico — apenas um profissional habilitado pode diagnosticar sua condição.</em>\n\nAgora, qual é o seu <strong>nome completo</strong>?`);
+      } else {
+        chatData.especialidade = 'A definir com o time';
+        addBotMessage(`Recebi seus sintomas! Nosso concierge humano vai analisar e indicar o especialista mais adequado para você. 👨‍⚕️\n\nContinuando — qual é o seu <strong>nome completo</strong>?`);
+      }
+      chatStep = STEP.NOME;
+      setInputState(true, 'Seu nome completo');
+      break;
+
+    case STEP.NOME:
+      chatData.nome = val;
+      chatStep = STEP.PLANO;
+      addBotMessage(`Nosso serviço funciona com <strong>consultas particulares</strong> em Teresópolis — pagamento direto ao médico no dia da consulta, sem SUS ou convênio. Deseja prosseguir?`);
+      setInputState(false, 'Selecione uma opção ↑');
+      showQuickReplies(['✅ Sim, quero agendar', '❓ Tenho dúvidas sobre o valor']);
+      break;
+
+    case STEP.PLANO:
+      chatData.plano = val;
+      if (val.includes('dúvidas')) {
+        addBotMessage(`Sem problema! 😊 Os valores variam conforme o especialista e a clínica. Nosso time te passa o valor estimado antes de confirmar. Pode deixar seu WhatsApp que entramos em contato!`);
+      } else {
+        addBotMessage(`Perfeito! Última etapa — qual o seu <strong>número de WhatsApp</strong> com DDD para nosso time confirmar o agendamento?`);
+      }
+      chatStep = STEP.WHATSAPP;
+      setInputState(true, 'Ex: (24) 99999-0000');
+      break;
+
+    case STEP.WHATSAPP:
+      chatData.whatsapp = val;
+      chatStep = STEP.FIM;
+      finishChat();
+      break;
+  }
+}
+
+function finishChat() {
+  const inp = document.getElementById('chat-input');
+  const sendBtn = document.getElementById('send-btn');
+  inp.disabled = true;
+  sendBtn.disabled = true;
+  inp.placeholder = 'Triagem concluída ✓';
+
+  // Save to localStorage
+  const record = {
+    ...chatData,
+    id: Date.now(),
+    datetime: new Date().toLocaleString('pt-BR')
+  };
+  const existing = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+  existing.push(record);
+  localStorage.setItem(LS_KEY, JSON.stringify(existing));
+
+  // Success message
+  const waCleaned = chatData.whatsapp.replace(/\D/g, '');
+  addBotMessage(`✅ <strong>Perfeito, ${chatData.nome.split(' ')[0]}!</strong> Recebemos sua solicitação!\n\nNosso concierge vai entrar em contato pelo seu WhatsApp em breve para confirmar a consulta com um(a) <strong class="text-teal-300">${chatData.especialidade}</strong>.\n\n<em class="text-slate-400 text-xs">Você também será redirecionado(a) para nosso WhatsApp agora.</em>`);
+
+  // Open WhatsApp
+  setTimeout(() => {
+    const msg = encodeURIComponent(
+      `*🏥 Novo pedido de agendamento — MedConcierge*\n\n` +
+      `*Nome:* ${chatData.nome}\n` +
+      `*Sintomas:* ${chatData.sintomas}\n` +
+      `*Especialidade sugerida:* ${chatData.especialidade}\n` +
+      `*Plano:* ${chatData.plano}\n` +
+      `*WhatsApp do cliente:* ${chatData.whatsapp}\n\n` +
+      `_Triagem realizada via sistema MedConcierge IA_`
+    );
+    window.open(`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${msg}`, '_blank');
+  }, 2000);
+}
+
+// Init chat on page load
+function initChat() {
+  chatStep = STEP.MODO;
+  chatMode = null;
+  chatData = { sintomas: '', especialidade: '', nome: '', plano: '', whatsapp: '' };
+  document.getElementById('chat-messages').innerHTML = '';
+  hideQuickReplies();
+  setInputState(false, 'Selecione uma opção acima ↑');
+
+  setTimeout(() => {
+    showTyping();
+    setTimeout(() => {
+      hideTyping();
+      addBotMessage(`Olá! 👋 Sou a assistente da <strong>MedConcierge</strong>. Agendamos consultas <strong>particulares</strong> com especialistas em <strong>Teresópolis · RJ</strong> — sem SUS, sem filas, sem estresse!\n\nComo posso te ajudar hoje?`);
+      showQuickReplies(['🔍 Descrever meus sintomas', '🩺 Já sei qual especialista quero']);
+    }, 1000);
+  }, 500);
+}
+
+// ═══════════════════════════════
+//  DASHBOARD
+// ═══════════════════════════════
+function loadDashboard() {
+  const records = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+  const tbody = document.getElementById('requests-tbody');
+  const empty = document.getElementById('empty-state');
+  const tableWrap = document.getElementById('requests-table-wrap');
+
+  // Stats
+  document.getElementById('stat-total').textContent = records.length;
+  const today = new Date().toLocaleDateString('pt-BR');
+  const todayCount = records.filter(r => r.datetime && r.datetime.startsWith(today)).length;
+  document.getElementById('stat-today').textContent = todayCount;
+  document.getElementById('stat-plano').textContent = records.filter(r => r.plano === 'Plano de Saúde').length;
+  document.getElementById('stat-particular').textContent = records.filter(r => r.plano === 'Particular').length;
+
+  if (records.length === 0) {
+    empty.classList.remove('hidden');
+    tableWrap.classList.add('hidden');
+    return;
+  }
+
+  empty.classList.add('hidden');
+  tableWrap.classList.remove('hidden');
+  tbody.innerHTML = '';
+
+  [...records].reverse().forEach((r, i) => {
+    const waCleaned = (r.whatsapp || '').replace(/\D/g, '');
+    const waBrazil = waCleaned.length >= 10 ? (waCleaned.startsWith('55') ? waCleaned : '55' + waCleaned) : waCleaned;
+    const planoBadge = r.plano === 'Particular'
+      ? `<span class="badge bg-teal-500/15 text-teal-300 border border-teal-500/20">Particular</span>`
+      : `<span class="badge bg-sky-500/15 text-sky-300 border border-sky-500/20">Plano de Saúde</span>`;
+
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-white/5 hover:bg-white/[0.02] transition-colors';
+    tr.innerHTML = `
+      <td class="px-6 py-4 text-slate-500 font-mono text-xs">${records.length - i}</td>
+      <td class="px-6 py-4">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-sky-500 to-teal-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+            ${(r.nome || '?').charAt(0).toUpperCase()}
+          </div>
+          <span class="text-white font-medium">${r.nome || '—'}</span>
+        </div>
+      </td>
+      <td class="px-6 py-4">
+        <div class="text-slate-300 text-xs leading-relaxed max-w-xs">
+          <span class="text-teal-300 font-semibold">${r.especialidade || 'Clínico Geral'}</span><br/>
+          <span class="text-slate-500">${(r.sintomas || '').substring(0, 60)}${(r.sintomas || '').length > 60 ? '…' : ''}</span>
+        </div>
+      </td>
+      <td class="px-6 py-4">${planoBadge}</td>
+      <td class="px-6 py-4 text-slate-300 font-mono text-sm">${r.whatsapp || '—'}</td>
+      <td class="px-6 py-4 text-slate-500 text-xs">${r.datetime || '—'}</td>
+      <td class="px-6 py-4">
+        <a href="https://api.whatsapp.com/send?phone=${waBrazil}&text=${encodeURIComponent(`Olá ${r.nome}, aqui é o time MedConcierge! Vi seu pedido de consulta com ${r.especialidade}. Vou te ajudar a agendar agora. 😊`)}" 
+           target="_blank"
+           class="inline-flex items-center gap-2 bg-emerald-500/15 border border-emerald-500/20 text-emerald-300 hover:text-emerald-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:bg-emerald-500/20 whitespace-nowrap">
+          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Mandar Mensagem
+        </a>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function clearAllRequests() {
+  if (!confirm('Tem certeza que deseja apagar TODOS os pedidos? Esta ação não pode ser desfeita.')) return;
+  localStorage.removeItem(LS_KEY);
+  loadDashboard();
+}
+
+// ═══════════════════════════════
+//  INIT
+// ═══════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  initChat();
+});
+</script>
+</body>
+</html>
