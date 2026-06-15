@@ -108,9 +108,14 @@
         </div>
         <span class="font-bold text-white text-lg tracking-tight">Med<span class="grad-text">Concierge</span></span>
       </div>
-      <button onclick="scrollToChat()" class="grad-bg text-white text-sm font-semibold px-5 py-2 rounded-xl hover:opacity-90 transition-opacity hidden sm:block">
-        Agendar Agora
-      </button>
+      <div class="hidden sm:flex items-center gap-2">
+        <button onclick="scrollToChat()" class="border border-white/15 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-white/5 transition-all">
+          Triagem IA
+        </button>
+        <button onclick="document.getElementById('agendamento-rapido').scrollIntoView({behavior:'smooth'})" class="grad-bg text-white text-sm font-semibold px-4 py-2 rounded-xl hover:opacity-90 transition-opacity">
+          ⚡ Agendar Direto
+        </button>
+      </div>
     </div>
   </nav>
 
@@ -151,7 +156,7 @@
 
         <p class="text-slate-400 text-lg leading-relaxed mb-10 max-w-lg">
           Nós encontramos o especialista ideal para você e agendamos sua consulta em <strong class="text-slate-200">Teresópolis</strong>. 
-          <strong class="text-slate-200">Sem perda de tempo, sem ligações intermináveis</strong> — nossa IA faz a triagem e nosso time humano cuida do resto. Atendemos exclusivamente consultas <strong class="text-slate-200">particulares</strong>, com médicos selecionados, fora do sistema SUS.
+          <strong class="text-slate-200">Sem perda de tempo, sem ligações intermináveis</strong> — nossa IA faz a triagem e nosso time humano cuida do resto. Atendemos pelo seu <strong class="text-slate-200">plano de saúde</strong> ou como <strong class="text-slate-200">consulta particular</strong>.
         </p>
 
         <div class="flex flex-col sm:flex-row gap-4">
@@ -171,7 +176,7 @@
           </div>
           <div class="flex items-center gap-2 text-slate-400 text-sm">
             <svg class="w-4 h-4 text-teal-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-            Consultas particulares
+            Plano de saúde ou particular
           </div>
           <div class="flex items-center gap-2 text-slate-400 text-sm">
             <svg class="w-4 h-4 text-teal-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
@@ -246,9 +251,7 @@
         <div class="text-center sm:text-left">
           <p class="text-amber-300 font-bold text-base mb-1">Serviço exclusivo para Teresópolis · RJ</p>
           <p class="text-slate-400 text-sm leading-relaxed">
-            Trabalhamos apenas com <strong class="text-slate-200">consultas particulares</strong> em clínicas e consultórios de Teresópolis. 
-            <strong class="text-slate-200">Não realizamos agendamentos pelo SUS</strong>, convênios coletivos ou planos de saúde. 
-            O pagamento é feito diretamente ao médico no dia da consulta.
+Trabalhamos com consultas pelo seu <strong class="text-slate-200">plano de saúde</strong> e consultas <strong class="text-slate-200">particulares</strong> em clínicas e consultórios de Teresópolis. Nossa equipe busca o especialista certo e agenda para você com agilidade.
           </p>
         </div>
       </div>
@@ -328,6 +331,108 @@
     </div>
   </section>
 
+
+  <!-- AGENDAMENTO RÁPIDO -->
+  <section id="agendamento-rapido" class="py-20 bg-[#0B1120]">
+    <div class="max-w-2xl mx-auto px-6">
+      <div class="text-center mb-10">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-300 text-sm font-medium mb-4">
+          ⚡ Agendamento Express
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-3">Já sabe qual <span class="grad-text">especialista</span> quer?</h2>
+        <p class="text-slate-400">Preencha o formulário abaixo e nosso time entra em contato rapidinho para confirmar sua consulta.</p>
+      </div>
+
+      <!-- Formulário rápido -->
+      <div class="grad-border rounded-3xl overflow-hidden bg-[#1E293B] shadow-2xl shadow-black/50">
+
+        <!-- Header -->
+        <div class="px-6 py-4 flex items-center gap-3 border-b border-white/5" style="background: linear-gradient(135deg, rgba(14,165,233,0.10) 0%, rgba(20,184,166,0.10) 100%);">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-sky-500 to-teal-500 flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          </div>
+          <div>
+            <p class="text-white font-semibold text-sm">Formulário de Agendamento</p>
+            <p class="text-teal-400 text-xs font-medium">Resposta em até 2 horas · Teresópolis · RJ</p>
+          </div>
+        </div>
+
+        <div class="p-6 space-y-5">
+
+          <!-- Especialidade -->
+          <div>
+            <label class="block text-slate-300 text-sm font-semibold mb-2">🩺 Especialidade desejada</label>
+            <div id="form-specialty-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-52 overflow-y-auto pr-1" style="scrollbar-width:thin"></div>
+            <input id="form-specialty-selected" type="hidden" value="" />
+            <!-- Campo "Outro" especialista -->
+            <div id="form-outro-wrap" class="hidden mt-3">
+              <div class="flex gap-2 items-center">
+                <span class="text-amber-400 text-lg">✏️</span>
+                <input id="form-outro-input" type="text" placeholder="Ex: Cirurgião Vascular, Mastologista, Proctologista..."
+                  class="chat-input flex-1 bg-[#0F172A] border border-amber-400/40 text-white placeholder-slate-500 rounded-xl px-4 py-2.5 text-sm transition-all focus:ring-2 focus:ring-amber-400/50"
+                  oninput="updateFormOutroValue(this.value)" />
+              </div>
+              <p class="text-amber-300/70 text-[11px] mt-1.5 ml-7">Digite o nome do especialista e continue preenchendo o formulário normalmente.</p>
+            </div>
+            <p id="form-specialty-error" class="hidden text-red-400 text-xs mt-2">⚠️ Selecione uma especialidade</p>
+          </div>
+
+          <!-- Nome -->
+          <div>
+            <label class="block text-slate-300 text-sm font-semibold mb-2">👤 Nome completo</label>
+            <input id="form-nome" type="text" placeholder="Seu nome completo"
+              class="chat-input w-full bg-[#0F172A] border border-white/10 text-white placeholder-slate-500 rounded-xl px-4 py-3 text-sm transition-all" />
+            <p id="form-nome-error" class="hidden text-red-400 text-xs mt-2">⚠️ Informe seu nome completo</p>
+          </div>
+
+          <!-- Tipo de consulta -->
+          <div>
+            <label class="block text-slate-300 text-sm font-semibold mb-2">💳 Tipo de consulta</label>
+            <div class="grid grid-cols-2 gap-3">
+              <button id="btn-plano" onclick="selectTipo('plano')"
+                class="tipo-btn flex items-center justify-center gap-2 border border-white/10 bg-[#0F172A] text-slate-300 rounded-xl py-3 text-sm font-medium transition-all hover:border-sky-400/50 hover:text-sky-300">
+                💳 Plano de Saúde
+              </button>
+              <button id="btn-particular" onclick="selectTipo('particular')"
+                class="tipo-btn flex items-center justify-center gap-2 border border-white/10 bg-[#0F172A] text-slate-300 rounded-xl py-3 text-sm font-medium transition-all hover:border-teal-400/50 hover:text-teal-300">
+                💵 Particular
+              </button>
+            </div>
+            <p id="form-tipo-error" class="hidden text-red-400 text-xs mt-2">⚠️ Selecione o tipo de consulta</p>
+          </div>
+
+          <!-- Nome do plano (condicional) -->
+          <div id="form-plano-wrap" class="hidden">
+            <label class="block text-slate-300 text-sm font-semibold mb-2">📋 Nome do plano de saúde</label>
+            <input id="form-nome-plano" type="text" placeholder="Ex: Unimed, Bradesco Saúde, Amil..."
+              class="chat-input w-full bg-[#0F172A] border border-white/10 text-white placeholder-slate-500 rounded-xl px-4 py-3 text-sm transition-all" />
+            <p id="form-plano-error" class="hidden text-red-400 text-xs mt-2">⚠️ Informe o nome do plano</p>
+          </div>
+
+          <!-- WhatsApp -->
+          <div>
+            <label class="block text-slate-300 text-sm font-semibold mb-2">📱 WhatsApp (com DDD)</label>
+            <input id="form-whatsapp" type="tel" placeholder="Ex: (24) 99999-0000"
+              class="chat-input w-full bg-[#0F172A] border border-white/10 text-white placeholder-slate-500 rounded-xl px-4 py-3 text-sm transition-all" />
+            <p id="form-whatsapp-error" class="hidden text-red-400 text-xs mt-2">⚠️ Informe seu WhatsApp</p>
+          </div>
+
+          <!-- Botão enviar -->
+          <button onclick="submitFormRapido()"
+            class="w-full grad-bg text-white font-bold py-4 rounded-2xl text-base hover:opacity-90 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-sky-500/20 flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Enviar pelo WhatsApp
+          </button>
+
+          <!-- Sucesso -->
+          <div id="form-sucesso" class="hidden bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 rounded-xl px-5 py-4 text-sm text-center">
+            ✅ <strong>Pedido enviado!</strong> Nosso time vai entrar em contato pelo seu WhatsApp em breve.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- FOOTER -->
   <footer class="border-t border-white/5 py-12">
     <div class="max-w-6xl mx-auto px-6">
@@ -341,7 +446,7 @@
 
         <div class="text-center text-slate-500 text-xs leading-relaxed max-w-xl">
           <p>⚠️ Este serviço de triagem por IA <strong class="text-slate-400">não constitui diagnóstico médico</strong> e não substitui a avaliação presencial de um profissional de saúde habilitado.</p>
-          <p class="mt-2">📍 Serviço disponível <strong class="text-slate-400">exclusivamente em Teresópolis · RJ</strong>. Trabalhamos apenas com <strong class="text-slate-400">consultas particulares</strong> — não realizamos agendamentos pelo SUS ou por convênios.</p>
+          <p class="mt-2">📍 Serviço disponível <strong class="text-slate-400">exclusivamente em Teresópolis · RJ</strong>. Atendemos pelo seu <strong class="text-slate-400">plano de saúde</strong> ou como consulta <strong class="text-slate-400">particular</strong>.</p>
           <p class="mt-2">🔒 Seus dados pessoais são tratados com base na <strong class="text-slate-400">Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018)</strong> e utilizados exclusivamente para fins de agendamento médico. Para solicitar exclusão, acesso ou correção dos seus dados, entre em contato conosco.</p>
         </div>
 
@@ -517,7 +622,8 @@
 // ═══════════════════════════════
 //  CONFIG — altere aqui
 // ═══════════════════════════════
-const WHATSAPP_NUMBER = '5521966012516'; // SEU NÚMERO AQUI (sem + e sem espaços)
+// ⚠️ CONFIGURE SEUS DADOS AQUI
+const WHATSAPP_NUMBER = '5511999999999'; // Seu número que receberá os pedidos (com 55 + DDD + número, sem espaços)
 const SUPERVISOR_USER = 'Supervisor';
 const SUPERVISOR_PASS = '182821Crt?';
 const LS_KEY = 'medconcierge_requests';
@@ -717,7 +823,7 @@ const SPECIALTY_MAP = {
 // Estado do chat — inclui modo de entrada (sintomas ou especialista direto)
 let chatStep = 0;
 let chatMode = null; // 'symptoms' | 'direct'
-let chatData = { sintomas: '', especialidade: '', nome: '', plano: '', whatsapp: '' };
+let chatData = { sintomas: '', especialidade: '', nome: '', plano: '', nomePlano: '', whatsapp: '' };
 
 function detectSpecialty(text) {
   const lower = text.toLowerCase();
@@ -812,11 +918,50 @@ function showSpecialtyGrid() {
     grid.appendChild(btn);
   });
 
+  // Botão "Outro"
+  const btnOutro = document.createElement('button');
+  btnOutro.className = 'flex items-center gap-2 bg-[#0F172A] border border-dashed border-white/20 hover:border-amber-400/60 hover:bg-amber-500/10 text-slate-300 hover:text-amber-300 text-xs px-3 py-2.5 rounded-xl transition-all text-left col-span-2';
+  btnOutro.innerHTML = `<span class="text-base leading-none flex-shrink-0">✏️</span><div><div class="font-semibold leading-tight">Outro especialista</div><div class="text-slate-500 text-[10px] leading-tight mt-0.5">Digite o especialista que você precisa</div></div>`;
+  btnOutro.onclick = () => showChatOutroInput();
+  grid.appendChild(btnOutro);
+
   wrapper.appendChild(grid);
+
+  // Campo oculto "Outro" no chat
+  const outroWrap = document.createElement('div');
+  outroWrap.id = 'chat-outro-wrap';
+  outroWrap.className = 'hidden mt-3 flex gap-2';
+  outroWrap.innerHTML = `
+    <input id="chat-outro-input" type="text" placeholder="Ex: Cirurgião Vascular, Mastologista..."
+      class="flex-1 bg-[#0F172A] border border-amber-400/40 text-white placeholder-slate-500 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-amber-400/50" />
+    <button onclick="confirmChatOutro()"
+      class="bg-amber-500 hover:bg-amber-400 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all whitespace-nowrap">
+      Confirmar
+    </button>`;
+  wrapper.appendChild(outroWrap);
+
   qr.appendChild(wrapper);
 
   const box = document.getElementById('chat-messages');
   box.scrollTop = box.scrollHeight;
+}
+
+function showChatOutroInput() {
+  const wrap = document.getElementById('chat-outro-wrap');
+  if (!wrap) return;
+  wrap.classList.remove('hidden');
+  document.getElementById('chat-outro-input').focus();
+  const box = document.getElementById('chat-messages');
+  box.scrollTop = box.scrollHeight;
+}
+
+function confirmChatOutro() {
+  const val = document.getElementById('chat-outro-input').value.trim();
+  if (!val) {
+    document.getElementById('chat-outro-input').style.borderColor = '#f87171';
+    return;
+  }
+  selectSpecialtyDirect(val);
 }
 
 function selectSpecialtyDirect(name) {
@@ -850,13 +995,14 @@ function setInputState(enabled, placeholder) {
 // ── Steps como constantes ────────────────────────────────
 const STEP = {
   INICIO:    0,
-  MODO:      1,   // escolhe sintomas ou especialista direto
-  SINTOMAS:  2,   // digita sintomas (modo symptoms)
-  GRID:      3,   // exibe grid (modo direct) — tratado internamente
+  MODO:      1,
+  SINTOMAS:  2,
+  GRID:      3,
   NOME:      4,
   PLANO:     5,
-  WHATSAPP:  6,
-  FIM:       7
+  NOME_PLANO:6,
+  WHATSAPP:  7,
+  FIM:       8
 };
 
 // ── Mensagem de envio ────────────────────────────────────
@@ -921,9 +1067,9 @@ function handleStep(val) {
     case STEP.NOME:
       chatData.nome = val;
       chatStep = STEP.PLANO;
-      addBotMessage(`Nosso serviço funciona com <strong>consultas particulares</strong> em Teresópolis — pagamento direto ao médico no dia da consulta, sem SUS ou convênio. Deseja prosseguir?`);
+      addBotMessage(`Quase lá! 😊 A consulta será pelo seu <strong>plano de saúde</strong> ou <strong>particular</strong>?`);
       setInputState(false, 'Selecione uma opção ↑');
-      showQuickReplies(['✅ Sim, quero agendar', '❓ Tenho dúvidas sobre o valor']);
+      showQuickReplies(['💳 Plano de Saúde', '💵 Particular']);
       break;
 
     case STEP.PLANO:
@@ -969,13 +1115,13 @@ function finishChat() {
   // Open WhatsApp
   setTimeout(() => {
     const msg = encodeURIComponent(
-      `*🏥 Novo pedido de agendamento — MedConcierge*\n\n` +
+      `*🏥 Novo pedido — MedConcierge*\n\n` +
       `*Nome:* ${chatData.nome}\n` +
-      `*Sintomas:* ${chatData.sintomas}\n` +
-      `*Especialidade sugerida:* ${chatData.especialidade}\n` +
-      `*Plano:* ${chatData.plano}\n` +
+      `*Especialidade:* ${chatData.especialidade}\n` +
+      (chatData.sintomas && !chatData.sintomas.startsWith('Paciente solicitou') ? `*Sintomas:* ${chatData.sintomas}\n` : '') +
+      `*Forma de pagamento:* ${chatData.plano}${chatData.nomePlano ? ' — ' + chatData.nomePlano : ''}\n` +
       `*WhatsApp do cliente:* ${chatData.whatsapp}\n\n` +
-      `_Triagem realizada via sistema MedConcierge IA_`
+      `_Pedido recebido via triagem IA — MedConcierge_`
     );
     window.open(`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${msg}`, '_blank');
   }, 2000);
@@ -985,7 +1131,7 @@ function finishChat() {
 function initChat() {
   chatStep = STEP.MODO;
   chatMode = null;
-  chatData = { sintomas: '', especialidade: '', nome: '', plano: '', whatsapp: '' };
+  chatData = { sintomas: '', especialidade: '', nome: '', plano: '', nomePlano: '', whatsapp: '' };
   document.getElementById('chat-messages').innerHTML = '';
   hideQuickReplies();
   setInputState(false, 'Selecione uma opção acima ↑');
@@ -994,7 +1140,7 @@ function initChat() {
     showTyping();
     setTimeout(() => {
       hideTyping();
-      addBotMessage(`Olá! 👋 Sou a assistente da <strong>MedConcierge</strong>. Agendamos consultas <strong>particulares</strong> com especialistas em <strong>Teresópolis · RJ</strong> — sem SUS, sem filas, sem estresse!\n\nComo posso te ajudar hoje?`);
+      addBotMessage(`Olá! 👋 Sou a assistente da <strong>MedConcierge</strong>. Agendamos consultas pelo seu <strong>plano de saúde</strong> ou <strong>particular</strong> com especialistas em <strong>Teresópolis · RJ</strong> — sem filas, sem estresse!\n\nComo posso te ajudar hoje?`);
       showQuickReplies(['🔍 Descrever meus sintomas', '🩺 Já sei qual especialista quero']);
     }, 1000);
   }, 500);
@@ -1014,7 +1160,7 @@ function loadDashboard() {
   const today = new Date().toLocaleDateString('pt-BR');
   const todayCount = records.filter(r => r.datetime && r.datetime.startsWith(today)).length;
   document.getElementById('stat-today').textContent = todayCount;
-  document.getElementById('stat-plano').textContent = records.filter(r => r.plano === 'Plano de Saúde').length;
+  document.getElementById('stat-plano').textContent = records.filter(r => r.plano && r.plano.includes('Plano')).length;
   document.getElementById('stat-particular').textContent = records.filter(r => r.plano === 'Particular').length;
 
   if (records.length === 0) {
@@ -1031,8 +1177,8 @@ function loadDashboard() {
     const waCleaned = (r.whatsapp || '').replace(/\D/g, '');
     const waBrazil = waCleaned.length >= 10 ? (waCleaned.startsWith('55') ? waCleaned : '55' + waCleaned) : waCleaned;
     const planoBadge = r.plano === 'Particular'
-      ? `<span class="badge bg-teal-500/15 text-teal-300 border border-teal-500/20">Particular</span>`
-      : `<span class="badge bg-sky-500/15 text-sky-300 border border-sky-500/20">Plano de Saúde</span>`;
+      ? `<span class="badge bg-teal-500/15 text-teal-300 border border-teal-500/20">💵 Particular</span>`
+      : `<span class="badge bg-sky-500/15 text-sky-300 border border-sky-500/20">💳 ${r.nomePlano || 'Plano de Saúde'}</span>`;
 
     const tr = document.createElement('tr');
     tr.className = 'border-b border-white/5 hover:bg-white/[0.02] transition-colors';
@@ -1048,8 +1194,8 @@ function loadDashboard() {
       </td>
       <td class="px-6 py-4">
         <div class="text-slate-300 text-xs leading-relaxed max-w-xs">
-          <span class="text-teal-300 font-semibold">${r.especialidade || 'Clínico Geral'}</span><br/>
-          <span class="text-slate-500">${(r.sintomas || '').substring(0, 60)}${(r.sintomas || '').length > 60 ? '…' : ''}</span>
+          <span class="text-teal-300 font-semibold">${r.especialidade || 'A definir'}</span><br/>
+          <span class="text-slate-500">${(r.sintomas || '').startsWith('Paciente solicitou') ? 'Agendamento direto' : (r.sintomas || '').substring(0, 55) + ((r.sintomas || '').length > 55 ? '…' : '')}</span>
         </div>
       </td>
       <td class="px-6 py-4">${planoBadge}</td>
@@ -1073,11 +1219,169 @@ function clearAllRequests() {
   loadDashboard();
 }
 
+
+// ═══════════════════════════════
+//  FORMULÁRIO RÁPIDO
+// ═══════════════════════════════
+let formTipo = null; // 'plano' | 'particular'
+let formEspecialidade = '';
+
+function initFormRapido() {
+  const grid = document.getElementById('form-specialty-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  SPECIALTIES_LIST.forEach(sp => {
+    const btn = document.createElement('button');
+    btn.className = 'form-sp-btn flex items-center gap-1.5 bg-[#0F172A] border border-white/10 hover:border-teal-500/50 hover:bg-teal-500/10 text-slate-200 text-xs px-3 py-2 rounded-xl transition-all text-left';
+    btn.dataset.name = sp.name;
+    btn.innerHTML = `<span class="text-sm leading-none">${sp.icon}</span><span class="font-medium leading-tight">${sp.name}</span>`;
+    btn.onclick = () => selectFormEspecialidade(sp.name, btn);
+    grid.appendChild(btn);
+  });
+
+  // Botão "Outro" no formulário
+  const btnOutroForm = document.createElement('button');
+  btnOutroForm.id = 'form-sp-btn-outro';
+  btnOutroForm.className = 'form-sp-btn col-span-2 sm:col-span-3 flex items-center gap-2 bg-[#0F172A] border border-dashed border-white/20 hover:border-amber-400/60 hover:bg-amber-500/10 text-slate-300 hover:text-amber-300 text-xs px-3 py-2.5 rounded-xl transition-all text-left w-full';
+  btnOutroForm.dataset.name = '__outro__';
+  btnOutroForm.innerHTML = `<span class="text-sm">✏️</span><span class="font-medium">Outro especialista</span><span class="text-slate-500 text-[10px] ml-1">— digite abaixo</span>`;
+  btnOutroForm.onclick = () => toggleFormOutro(btnOutroForm);
+  grid.appendChild(btnOutroForm);
+}
+
+function selectFormEspecialidade(name, btn) {
+  // Esconde o campo "Outro" se selecionou uma especialidade normal
+  document.getElementById('form-outro-wrap').classList.add('hidden');
+  document.getElementById('form-outro-input').value = '';
+
+  formEspecialidade = name;
+  document.getElementById('form-specialty-selected').value = name;
+  document.querySelectorAll('.form-sp-btn').forEach(b => {
+    b.classList.remove('border-teal-500', 'bg-teal-500/15', 'text-teal-200', 'border-amber-400', 'bg-amber-500/10', 'text-amber-300');
+    b.classList.add('border-white/10', 'bg-[#0F172A]', 'text-slate-200');
+  });
+  btn.classList.remove('border-white/10', 'bg-[#0F172A]', 'text-slate-200');
+  btn.classList.add('border-teal-500', 'bg-teal-500/15', 'text-teal-200');
+  document.getElementById('form-specialty-error').classList.add('hidden');
+}
+
+function toggleFormOutro(btn) {
+  const wrap = document.getElementById('form-outro-wrap');
+  const input = document.getElementById('form-outro-input');
+  const isHidden = wrap.classList.contains('hidden');
+
+  // Limpa seleção atual
+  document.querySelectorAll('.form-sp-btn').forEach(b => {
+    b.classList.remove('border-teal-500', 'bg-teal-500/15', 'text-teal-200', 'border-amber-400', 'bg-amber-500/10', 'text-amber-300');
+    b.classList.add('border-white/10', 'bg-[#0F172A]', 'text-slate-200');
+  });
+
+  if (isHidden) {
+    wrap.classList.remove('hidden');
+    btn.classList.remove('border-white/10', 'bg-[#0F172A]', 'text-slate-200');
+    btn.classList.add('border-amber-400', 'bg-amber-500/10', 'text-amber-300');
+    formEspecialidade = '';
+    document.getElementById('form-specialty-selected').value = '';
+    setTimeout(() => input.focus(), 100);
+  } else {
+    wrap.classList.add('hidden');
+    btn.classList.remove('border-amber-400', 'bg-amber-500/10', 'text-amber-300');
+    btn.classList.add('border-white/10', 'bg-[#0F172A]', 'text-slate-200');
+    formEspecialidade = '';
+    document.getElementById('form-specialty-selected').value = '';
+    input.value = '';
+  }
+}
+
+function updateFormOutroValue(val) {
+  formEspecialidade = val;
+  document.getElementById('form-specialty-selected').value = val;
+  if (val.trim()) document.getElementById('form-specialty-error').classList.add('hidden');
+}
+
+function selectTipo(tipo) {
+  formTipo = tipo;
+  const btnPlano = document.getElementById('btn-plano');
+  const btnPart  = document.getElementById('btn-particular');
+  const wrap     = document.getElementById('form-plano-wrap');
+
+  if (tipo === 'plano') {
+    btnPlano.classList.add('border-sky-400', 'text-sky-300', 'bg-sky-500/10');
+    btnPlano.classList.remove('border-white/10', 'text-slate-300', 'bg-[#0F172A]');
+    btnPart.classList.remove('border-teal-400', 'text-teal-300', 'bg-teal-500/10');
+    btnPart.classList.add('border-white/10', 'text-slate-300', 'bg-[#0F172A]');
+    wrap.classList.remove('hidden');
+  } else {
+    btnPart.classList.add('border-teal-400', 'text-teal-300', 'bg-teal-500/10');
+    btnPart.classList.remove('border-white/10', 'text-slate-300', 'bg-[#0F172A]');
+    btnPlano.classList.remove('border-sky-400', 'text-sky-300', 'bg-sky-500/10');
+    btnPlano.classList.add('border-white/10', 'text-slate-300', 'bg-[#0F172A]');
+    wrap.classList.add('hidden');
+  }
+  document.getElementById('form-tipo-error').classList.add('hidden');
+}
+
+function submitFormRapido() {
+  const nome       = document.getElementById('form-nome').value.trim();
+  const whatsapp   = document.getElementById('form-whatsapp').value.trim();
+  const nomePlano  = document.getElementById('form-nome-plano').value.trim();
+  const specialty  = document.getElementById('form-specialty-selected').value;
+  let valid = true;
+
+  // Validações
+  if (!specialty) { document.getElementById('form-specialty-error').classList.remove('hidden'); valid = false; }
+  if (!nome)      { document.getElementById('form-nome-error').classList.remove('hidden'); valid = false; }
+  else            { document.getElementById('form-nome-error').classList.add('hidden'); }
+  if (!formTipo)  { document.getElementById('form-tipo-error').classList.remove('hidden'); valid = false; }
+  if (formTipo === 'plano' && !nomePlano) { document.getElementById('form-plano-error').classList.remove('hidden'); valid = false; }
+  else            { document.getElementById('form-plano-error')?.classList.add('hidden'); }
+  if (!whatsapp)  { document.getElementById('form-whatsapp-error').classList.remove('hidden'); valid = false; }
+  else            { document.getElementById('form-whatsapp-error').classList.add('hidden'); }
+
+  if (!valid) return;
+
+  // Salvar no localStorage
+  const record = {
+    sintomas: 'Agendamento Express (formulário direto)',
+    especialidade: specialty,
+    nome,
+    plano: formTipo === 'plano' ? 'Plano de Saúde' : 'Particular',
+    nomePlano: formTipo === 'plano' ? nomePlano : '',
+    whatsapp,
+    id: Date.now(),
+    datetime: new Date().toLocaleString('pt-BR'),
+    origem: 'Formulário Rápido'
+  };
+  const existing = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+  existing.push(record);
+  localStorage.setItem(LS_KEY, JSON.stringify(existing));
+
+  // Montar mensagem WhatsApp para o SEU número
+  const planoInfo = formTipo === 'plano' ? `Plano de Saúde — ${nomePlano}` : 'Particular';
+  const msg = encodeURIComponent(
+    `*📋 Agendamento Express — MedConcierge*\n\n` +
+    `*Especialidade:* ${specialty}\n` +
+    `*Nome:* ${nome}\n` +
+    `*Pagamento:* ${planoInfo}\n` +
+    `*WhatsApp do cliente:* ${whatsapp}\n\n` +
+    `_Pedido via Formulário Rápido — MedConcierge_`
+  );
+
+  // Exibir sucesso
+  document.getElementById('form-sucesso').classList.remove('hidden');
+
+  // Abrir WhatsApp para o número do proprietário
+  setTimeout(() => {
+    window.open(`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${msg}`, '_blank');
+  }, 800);
+}
+
 // ═══════════════════════════════
 //  INIT
 // ═══════════════════════════════
 window.addEventListener('DOMContentLoaded', () => {
   initChat();
+  initFormRapido();
 });
 </script>
 </body>
