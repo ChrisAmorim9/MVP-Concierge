@@ -6,6 +6,8 @@
 <title>MedConcierge — Consultas Médicas Sem Estresse</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+<!-- Supabase JS v2 via CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 <style>
   :root {
@@ -843,10 +845,41 @@ Trabalhamos com consultas pelo seu <strong class="text-slate-200">plano de saúd
 //  CONFIG — altere aqui
 // ═══════════════════════════════
 // ⚠️ CONFIGURE SEUS DADOS AQUI
-const WHATSAPP_NUMBER = '5511999999999'; // Seu número que receberá os pedidos (com 55 + DDD + número, sem espaços)
-const SUPERVISOR_USER = 'Supervisor';
-const SUPERVISOR_PASS = '182821Crt?';
-const LS_KEY = 'medconcierge_requests';
+
+const WHATSAPP_NUMBER = '5511999999999'; // Seu número (55 + DDD + número, sem espaços)
+
+// ─── Supabase ────────────────────────────────────────────
+// 📌 Onde encontrar esses valores:
+//    1. Acesse https://supabase.com e abra seu projeto
+//    2. Vá em Settings → API
+//    3. "Project URL"  → copie para SUPABASE_URL
+//    4. "anon / public" key → copie para SUPABASE_ANON_KEY
+const SUPABASE_URL      = 'https://bvwauwproybxoukfgrgo.supabase.co/rest/v1/';  // ← cole aqui
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ2d2F1d3Byb3lieG91a2ZncmdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NDg1MDYsImV4cCI6MjA5NzIyNDUwNn0.guPdRSQ8XMiil1UGjznSjYZQ3_aFLdaNXlYlrUgYWm4';                // ← cole aqui
+
+// Inicializa o cliente Supabase (disponível globalmente como `sb`)
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ─── Estrutura esperada no Supabase ──────────────────────
+// Tabela: pedidos
+//   id              uuid  (gerado pelo Supabase, PK)
+//   nome            text
+//   whatsapp        text
+//   sintomas        text
+//   especialidade   text
+//   plano           text
+//   nome_plano      text  (nullable)
+//   origem          text  (nullable — 'Chat IA' ou 'Formulário Rápido')
+//   created_at      timestamptz (gerado automaticamente pelo Supabase)
+//
+// ⚠️ Row Level Security (RLS):
+//   - Habilite RLS na tabela `pedidos`
+//   - Crie policy INSERT: permitir para role "anon" (clientes inserem sem login)
+//   - Crie policy SELECT: permitir apenas para role "authenticated" (supervisor logado)
+//   - Crie policy DELETE: idem, apenas "authenticated"
+//
+// Auth: use o painel do Supabase → Authentication → Users
+//       para cadastrar o e-mail e senha do supervisor.
 
 // ═══════════════════════════════
 //  NAVEGAÇÃO ENTRE ÁREAS
@@ -887,18 +920,32 @@ function togglePass() {
   inp.type = passVisible ? 'text' : 'password';
 }
 
-function doLogin() {
-  const u = document.getElementById('login-user').value.trim();
-  const p = document.getElementById('login-pass').value;
-  const err = document.getElementById('login-error');
-  if (u === SUPERVISOR_USER && p === SUPERVISOR_PASS) {
-    err.classList.add('hidden');
-    showDashboard();
-  } else {
-    err.classList.remove('hidden');
-    document.getElementById('login-error-msg').textContent = 'Usuário ou senha incorretos. Tente novamente.';
-    document.getElementById('login-pass').value = '';
+async function doLogin() {
+  const email = document.getElementById('login-user').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  const btn   = document.querySelector('#login-area button.grad-bg');
+
+  if (!email || !pass) {
+    showLoginError('Preencha e-mail e senha.');
+    return;
   }
+
+  // Loading state
+  if (btn) { btn.disabled = true; btn.textContent = 'Entrando…'; }
+
+  // 📌 Autenticação real via Supabase Auth
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+
+  if (btn) { btn.disabled = false; btn.textContent = 'Entrar no Painel'; }
+
+  if (error) {
+    showLoginError('E-mail ou senha incorretos. Verifique e tente novamente.');
+    document.getElementById('login-pass').value = '';
+    return;
+  }
+
+  document.getElementById('login-error').classList.add('hidden');
+  showDashboard();
 }
 
 // ── Google OAuth ───────────────────────────────────────────
@@ -969,7 +1016,10 @@ function showLoginError(msg) {
   err.classList.remove('hidden');
 }
 
-function doLogout() {
+async function doLogout() {
+  // Sign out do Supabase
+  await sb.auth.signOut();
+
   // Revoga sessão Google se estiver logado com ele
   if (window._googleUser && typeof google !== 'undefined') {
     try { google.accounts.id.disableAutoSelect(); } catch(e) {}
@@ -1016,6 +1066,7 @@ function closeMobileMenu() {
 // ═══════════════════════════════
 //  CONTA DO CLIENTE
 // ═══════════════════════════════
+// 📌 Contas de clientes ainda usam localStorage (migrar para Supabase Auth em versão futura)
 const LS_CLIENTS = 'medconcierge_clients';
 const LS_CLIENT_SESSION = 'medconcierge_client_session';
 
@@ -1674,37 +1725,43 @@ function handleStep(val) {
   }
 }
 
-function finishChat() {
-  const inp = document.getElementById('chat-input');
+async function finishChat() {
+  const inp    = document.getElementById('chat-input');
   const sendBtn = document.getElementById('send-btn');
-  inp.disabled = true;
+  inp.disabled    = true;
   sendBtn.disabled = true;
+  inp.placeholder  = 'Enviando…';
+
+  // 📌 INSERT na tabela `pedidos` do Supabase
+  const { error } = await sb.from('pedidos').insert({
+    nome:          chatData.nome,
+    whatsapp:      chatData.whatsapp,
+    sintomas:      chatData.sintomas,
+    especialidade: chatData.especialidade,
+    plano:         chatData.plano,
+    nome_plano:    chatData.nomePlano || null,
+    origem:        'Chat IA'
+  });
+
+  if (error) {
+    console.error('Supabase insert error:', error.message);
+    // Mesmo com erro no banco, não bloqueia o fluxo do cliente
+  }
+
   inp.placeholder = 'Triagem concluída ✓';
 
-  // Save to localStorage
-  const record = {
-    ...chatData,
-    id: Date.now(),
-    datetime: new Date().toLocaleString('pt-BR')
-  };
-  const existing = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
-  existing.push(record);
-  localStorage.setItem(LS_KEY, JSON.stringify(existing));
-
-  // Success message
-  const waCleaned = chatData.whatsapp.replace(/\D/g, '');
   addBotMessage(`✅ <strong>Perfeito, ${chatData.nome.split(' ')[0]}!</strong> Recebemos sua solicitação!\n\nNosso concierge vai entrar em contato pelo seu WhatsApp em breve para confirmar a consulta com um(a) <strong class="text-teal-300">${chatData.especialidade}</strong>.\n\n<em class="text-slate-400 text-xs">Você também será redirecionado(a) para nosso WhatsApp agora.</em>`);
 
-  // Open WhatsApp
+  // Abre WhatsApp do proprietário com resumo do pedido
   setTimeout(() => {
     const msg = encodeURIComponent(
       `*🏥 Novo pedido — MedConcierge*\n\n` +
       `*Nome:* ${chatData.nome}\n` +
       `*Especialidade:* ${chatData.especialidade}\n` +
       (chatData.sintomas && !chatData.sintomas.startsWith('Paciente solicitou') ? `*Sintomas:* ${chatData.sintomas}\n` : '') +
-      `*Forma de pagamento:* ${chatData.plano}${chatData.nomePlano ? ' — ' + chatData.nomePlano : ''}\n` +
+      `*Pagamento:* ${chatData.plano}${chatData.nomePlano ? ' — ' + chatData.nomePlano : ''}\n` +
       `*WhatsApp do cliente:* ${chatData.whatsapp}\n\n` +
-      `_Pedido recebido via triagem IA — MedConcierge_`
+      `_Via Chat IA — MedConcierge_`
     );
     window.open(`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${msg}`, '_blank');
   }, 2000);
@@ -1732,18 +1789,44 @@ function initChat() {
 // ═══════════════════════════════
 //  DASHBOARD
 // ═══════════════════════════════
-function loadDashboard() {
-  const records = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
-  const tbody = document.getElementById('requests-tbody');
-  const empty = document.getElementById('empty-state');
+
+// Auxiliar: mostra skeleton de loading nas células de stat
+function setDashLoading(on) {
+  ['stat-total','stat-today','stat-plano','stat-particular'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = on ? '…' : el.textContent;
+  });
+}
+
+async function loadDashboard() {
+  setDashLoading(true);
+
+  // 📌 SELECT em `pedidos` ordenado do mais recente para o mais antigo
+  const { data: records, error } = await sb
+    .from('pedidos')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Supabase select error:', error.message);
+    setDashLoading(false);
+    showDashError('Erro ao carregar pedidos. Verifique sua conexão com o Supabase.');
+    return;
+  }
+
+  const tbody    = document.getElementById('requests-tbody');
+  const empty    = document.getElementById('empty-state');
   const tableWrap = document.getElementById('requests-table-wrap');
 
-  // Stats
-  document.getElementById('stat-total').textContent = records.length;
-  const today = new Date().toLocaleDateString('pt-BR');
-  const todayCount = records.filter(r => r.datetime && r.datetime.startsWith(today)).length;
-  document.getElementById('stat-today').textContent = todayCount;
-  document.getElementById('stat-plano').textContent = records.filter(r => r.plano && r.plano.includes('Plano')).length;
+  // ── Cálculo dos stats ──────────────────────────────────
+  const todayISO = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+  const todayCount = records.filter(r =>
+    r.created_at && r.created_at.startsWith(todayISO)
+  ).length;
+
+  document.getElementById('stat-total').textContent    = records.length;
+  document.getElementById('stat-today').textContent    = todayCount;
+  document.getElementById('stat-plano').textContent    = records.filter(r => r.plano && r.plano.includes('Plano')).length;
   document.getElementById('stat-particular').textContent = records.filter(r => r.plano === 'Particular').length;
 
   if (records.length === 0) {
@@ -1756,12 +1839,24 @@ function loadDashboard() {
   tableWrap.classList.remove('hidden');
   tbody.innerHTML = '';
 
-  [...records].reverse().forEach((r, i) => {
+  records.forEach((r, i) => {
     const waCleaned = (r.whatsapp || '').replace(/\D/g, '');
-    const waBrazil = waCleaned.length >= 10 ? (waCleaned.startsWith('55') ? waCleaned : '55' + waCleaned) : waCleaned;
+    const waBrazil  = waCleaned.length >= 10
+      ? (waCleaned.startsWith('55') ? waCleaned : '55' + waCleaned)
+      : waCleaned;
+
     const planoBadge = r.plano === 'Particular'
       ? `<span class="badge bg-teal-500/15 text-teal-300 border border-teal-500/20">💵 Particular</span>`
-      : `<span class="badge bg-sky-500/15 text-sky-300 border border-sky-500/20">💳 ${r.nomePlano || 'Plano de Saúde'}</span>`;
+      : `<span class="badge bg-sky-500/15 text-sky-300 border border-sky-500/20">💳 ${r.nome_plano || 'Plano de Saúde'}</span>`;
+
+    // Formata data do Supabase (ISO) para pt-BR
+    const dataBR = r.created_at
+      ? new Date(r.created_at).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })
+      : '—';
+
+    const sintomasLabel = (r.sintomas || '').startsWith('Paciente solicitou')
+      ? 'Agendamento direto'
+      : (r.sintomas || '').substring(0, 55) + ((r.sintomas || '').length > 55 ? '…' : '');
 
     const tr = document.createElement('tr');
     tr.className = 'border-b border-white/5 hover:bg-white/[0.02] transition-colors';
@@ -1778,28 +1873,69 @@ function loadDashboard() {
       <td class="px-6 py-4">
         <div class="text-slate-300 text-xs leading-relaxed max-w-xs">
           <span class="text-teal-300 font-semibold">${r.especialidade || 'A definir'}</span><br/>
-          <span class="text-slate-500">${(r.sintomas || '').startsWith('Paciente solicitou') ? 'Agendamento direto' : (r.sintomas || '').substring(0, 55) + ((r.sintomas || '').length > 55 ? '…' : '')}</span>
+          <span class="text-slate-500">${sintomasLabel}</span>
         </div>
       </td>
       <td class="px-6 py-4">${planoBadge}</td>
       <td class="px-6 py-4 text-slate-300 font-mono text-sm">${r.whatsapp || '—'}</td>
-      <td class="px-6 py-4 text-slate-500 text-xs">${r.datetime || '—'}</td>
+      <td class="px-6 py-4 text-slate-500 text-xs whitespace-nowrap">${dataBR}</td>
       <td class="px-6 py-4">
-        <a href="https://api.whatsapp.com/send?phone=${waBrazil}&text=${encodeURIComponent(`Olá ${r.nome}, aqui é o time MedConcierge! Vi seu pedido de consulta com ${r.especialidade}. Vou te ajudar a agendar agora. 😊`)}" 
-           target="_blank"
-           class="inline-flex items-center gap-2 bg-emerald-500/15 border border-emerald-500/20 text-emerald-300 hover:text-emerald-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:bg-emerald-500/20 whitespace-nowrap">
-          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          Mandar Mensagem
-        </a>
+        <div class="flex items-center gap-2">
+          <a href="https://api.whatsapp.com/send?phone=${waBrazil}&text=${encodeURIComponent(`Olá ${r.nome}, aqui é o time MedConcierge! Vi seu pedido de consulta com ${r.especialidade}. Vou te ajudar a agendar agora. 😊`)}"
+             target="_blank"
+             class="inline-flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-500/20 text-emerald-300 hover:text-emerald-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:bg-emerald-500/20 whitespace-nowrap">
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Mandar Mensagem
+          </a>
+          <button onclick="deletePedido('${r.id}', this)"
+            class="inline-flex items-center gap-1.5 bg-red-500/10 border border-red-500/20 text-red-400 hover:text-red-300 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all hover:bg-red-500/15 whitespace-nowrap">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            Excluir
+          </button>
+        </div>
       </td>`;
     tbody.appendChild(tr);
   });
 }
 
-function clearAllRequests() {
-  if (!confirm('Tem certeza que deseja apagar TODOS os pedidos? Esta ação não pode ser desfeita.')) return;
-  localStorage.removeItem(LS_KEY);
+// Exclui um pedido individual via DELETE no Supabase
+async function deletePedido(id, btn) {
+  if (!confirm('Excluir este pedido permanentemente?')) return;
+  btn.disabled = true;
+  btn.textContent = '…';
+
+  const { error } = await sb.from('pedidos').delete().eq('id', id);
+  if (error) {
+    alert('Erro ao excluir: ' + error.message);
+    btn.disabled = false;
+    btn.textContent = 'Excluir';
+    return;
+  }
+  // Remove a linha da tabela sem recarregar tudo
+  btn.closest('tr').remove();
+  // Atualiza stats
   loadDashboard();
+}
+
+// Limpa todos os pedidos via DELETE sem filtro
+async function clearAllRequests() {
+  if (!confirm('Tem certeza que deseja apagar TODOS os pedidos? Esta ação não pode ser desfeita.')) return;
+
+  const { error } = await sb.from('pedidos').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+  if (error) { alert('Erro ao limpar: ' + error.message); return; }
+  loadDashboard();
+}
+
+function showDashError(msg) {
+  const empty = document.getElementById('empty-state');
+  empty.classList.remove('hidden');
+  empty.innerHTML = `
+    <div class="w-16 h-16 rounded-2xl bg-red-500/10 flex items-center justify-center mx-auto mb-4">
+      <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+    </div>
+    <p class="text-red-300 font-medium">${msg}</p>
+    <button onclick="loadDashboard()" class="mt-4 grad-bg text-white text-sm font-semibold px-5 py-2 rounded-xl hover:opacity-90 transition-opacity">Tentar novamente</button>`;
+  document.getElementById('requests-table-wrap').classList.add('hidden');
 }
 
 
@@ -1904,7 +2040,7 @@ function selectTipo(tipo) {
   document.getElementById('form-tipo-error').classList.add('hidden');
 }
 
-function submitFormRapido() {
+async function submitFormRapido() {
   const nome       = document.getElementById('form-nome').value.trim();
   const whatsapp   = document.getElementById('form-whatsapp').value.trim();
   const nomePlano  = document.getElementById('form-nome-plano').value.trim();
@@ -1923,21 +2059,24 @@ function submitFormRapido() {
 
   if (!valid) return;
 
-  // Salvar no localStorage
-  const record = {
-    sintomas: 'Agendamento Express (formulário direto)',
-    especialidade: specialty,
+  // Botão loading
+  const submitBtn = document.querySelector('#agendamento-rapido button[onclick="submitFormRapido()"]');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Enviando…'; }
+
+  // 📌 INSERT na tabela `pedidos` do Supabase
+  const { error } = await sb.from('pedidos').insert({
     nome,
-    plano: formTipo === 'plano' ? 'Plano de Saúde' : 'Particular',
-    nomePlano: formTipo === 'plano' ? nomePlano : '',
     whatsapp,
-    id: Date.now(),
-    datetime: new Date().toLocaleString('pt-BR'),
-    origem: 'Formulário Rápido'
-  };
-  const existing = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
-  existing.push(record);
-  localStorage.setItem(LS_KEY, JSON.stringify(existing));
+    sintomas:      'Agendamento Express (formulário direto)',
+    especialidade: specialty,
+    plano:         formTipo === 'plano' ? 'Plano de Saúde' : 'Particular',
+    nome_plano:    formTipo === 'plano' ? nomePlano : null,
+    origem:        'Formulário Rápido'
+  });
+
+  if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> Enviar pelo WhatsApp`; }
+
+  if (error) console.error('Supabase form insert error:', error.message);
 
   // Montar mensagem WhatsApp para o SEU número
   const planoInfo = formTipo === 'plano' ? `Plano de Saúde — ${nomePlano}` : 'Particular';
@@ -1947,7 +2086,7 @@ function submitFormRapido() {
     `*Nome:* ${nome}\n` +
     `*Pagamento:* ${planoInfo}\n` +
     `*WhatsApp do cliente:* ${whatsapp}\n\n` +
-    `_Pedido via Formulário Rápido — MedConcierge_`
+    `_Via Formulário Rápido — MedConcierge_`
   );
 
   // Exibir sucesso
@@ -1962,15 +2101,25 @@ function submitFormRapido() {
 // ═══════════════════════════════
 //  INIT
 // ═══════════════════════════════
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
   initChat();
   initFormRapido();
-  // Restaura sessão do cliente se existir
-  const session = getClientSession();
-  if (session) updateNavClientBtn(session);
+
+  // Restaura sessão do cliente (localStorage) se existir
+  const clientSession = getClientSession();
+  if (clientSession) updateNavClientBtn(clientSession);
+
   // Define max date para data de nascimento (hoje)
   const nascInput = document.getElementById('cl-reg-nasc');
   if (nascInput) nascInput.max = new Date().toISOString().split('T')[0];
+
+  // 📌 Verifica se o supervisor já tem sessão ativa no Supabase
+  //    (útil quando o usuário recarrega a página sem ter feito logout)
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    // Sessão válida — restaura o dashboard diretamente
+    showDashboard();
+  }
 });
 </script>
 </body>
