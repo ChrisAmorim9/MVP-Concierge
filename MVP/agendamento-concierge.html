@@ -695,8 +695,8 @@ Trabalhamos com consultas pelo seu <strong class="text-slate-200">plano de saúd
 
         <!-- Login manual -->
         <div>
-          <label class="block text-slate-300 text-sm font-medium mb-2">Usuário</label>
-          <input id="login-user" type="text" placeholder="Digite seu usuário"
+          <label class="block text-slate-300 text-sm font-medium mb-2">E-mail</label>
+          <input id="login-user" type="text" placeholder="Digite seu E-mail"
             class="login-input w-full bg-[#0F172A] border border-white/10 text-white placeholder-slate-500 rounded-xl px-4 py-3 text-sm transition-all"
             onkeydown="if(event.key==='Enter') doLogin()" />
         </div>
@@ -846,7 +846,7 @@ Trabalhamos com consultas pelo seu <strong class="text-slate-200">plano de saúd
 // ═══════════════════════════════
 // ⚠️ CONFIGURE SEUS DADOS AQUI
 
-const WHATSAPP_NUMBER = '5511999999999'; // Seu número (55 + DDD + número, sem espaços)
+const WHATSAPP_NUMBER = '5521966012516'; // Seu número (55 + DDD + número, sem espaços)
 
 // ─── Supabase ────────────────────────────────────────────
 // 📌 Onde encontrar esses valores:
@@ -952,10 +952,8 @@ async function doLogin() {
 
 // E-mails autorizados a acessar o painel via Google
 // Adicione aqui os e-mails Google dos supervisores
-const GOOGLE_ALLOWED_EMAILS = [
-  // 'supervisor@gmail.com', // ← adicione seus e-mails aqui
-];
-
+const GOOGLE_ALLOWED_EMAILS = ['cristianamorimmm0@gmail.com'];
+// 'supervisor@gmail.com', // ← adicione seus e-mails aqui
 function triggerGoogleLogin() {
   if (typeof google === 'undefined') {
     showLoginError('O SDK do Google ainda está carregando. Aguarde um momento e tente novamente.');
